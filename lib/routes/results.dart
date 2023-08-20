@@ -160,9 +160,14 @@ class _ResultState extends State<Result> {
                                               Align(
                                                 alignment: Alignment.bottomRight,
                                                 child: Container(
-                                                  decoration:
-                                                      BoxDecoration(border: Border.all(), shape: BoxShape.circle),
-                                                  child: IconButton(onPressed: () {}, icon: const Icon(Icons.download)),
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(),
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: IconButton(
+                                                    onPressed: () {},
+                                                    icon: const Icon(Icons.download),
+                                                  ),
                                                 ),
                                               )
                                             ],
@@ -329,17 +334,23 @@ class _ResultState extends State<Result> {
                                 ),
                                 ListTile(
                                   onTap: () {
+                                    setState(() {
+                                      license = "rf";
+                                    });
                                     Navigator.pop(context);
                                   },
                                   visualDensity: const VisualDensity(vertical: -4),
                                   title: Text(
-                                    "RE",
+                                    "RF",
                                     style: GoogleFonts.poppins(),
                                   ),
                                 ),
                                 const Divider(thickness: 1),
                                 ListTile(
                                   onTap: () {
+                                    setState(() {
+                                      license = "rm";
+                                    });
                                     Navigator.pop(context);
                                   },
                                   visualDensity: const VisualDensity(vertical: -4),
@@ -351,6 +362,9 @@ class _ResultState extends State<Result> {
                                 const Divider(thickness: 1),
                                 ListTile(
                                   onTap: () {
+                                    setState(() {
+                                      license = "either";
+                                    });
                                     Navigator.pop(context);
                                   },
                                   visualDensity: const VisualDensity(vertical: -4),
