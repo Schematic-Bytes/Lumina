@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:lumina/requests/client.dart';
 import 'package:lumina/routes/results.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -71,6 +72,7 @@ class _SearchInputState extends State<SearchInput> {
 
   @override
   Widget build(BuildContext context) {
+    final client = context.read<Client>();
     return TextField(
       controller: _controller,
       decoration: InputDecoration(
@@ -85,7 +87,6 @@ class _SearchInputState extends State<SearchInput> {
             final result = await FilePicker.platform.pickFiles(type: FileType.image);
             if (result != null) {
               PlatformFile file = result.files.first;
-              final client = Client();
               final label = await client.predict(file.path!);
               setState(() {
                 _controller.text = label;
@@ -100,7 +101,7 @@ class _SearchInputState extends State<SearchInput> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const Result(),
+                builder: (context) => Result(query: _controller.text),
               ),
             );
           },

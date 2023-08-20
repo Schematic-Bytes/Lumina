@@ -1,38 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+import 'package:lumina/requests/client.dart';
+import 'package:lumina/requests/model.dart';
+import 'package:provider/provider.dart';
 
 class Result extends StatefulWidget {
-  const Result({super.key});
+  final String query;
+  const Result({super.key, required this.query});
 
   @override
   State<Result> createState() => _ResultState();
 }
 
 class _ResultState extends State<Result> {
-  @override
   bool isModelReleaseSelected = false;
   bool isPropertyReleaseSelected = false;
+  String orientation = "all";
 
   @override
   Widget build(BuildContext context) {
+    final client = context.read<Client>();
+
     return Scaffold(
       appBar: AppBar(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Racing Cars",
+              widget.query,
               style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold),
+                color: Colors.black,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             Text(
               "10 Items",
-              style: GoogleFonts.poppins(color: Colors.black, fontSize: 13),
+              style: GoogleFonts.poppins(
+                color: Colors.black,
+                fontSize: 13,
+              ),
             )
           ],
         ),
@@ -42,7 +50,11 @@ class _ResultState extends State<Result> {
       ),
       body: SafeArea(
         child: Container(
-          margin: const EdgeInsets.only(left: 10, right: 10, top: 1),
+          margin: const EdgeInsets.only(
+            left: 10,
+            right: 10,
+            top: 1,
+          ),
           child: Column(
             children: [
               SizedBox(
@@ -84,8 +96,7 @@ class _ResultState extends State<Result> {
                         ),
                         onSelected: (bool newBool) {
                           setState(() {
-                            isPropertyReleaseSelected =
-                                !isPropertyReleaseSelected;
+                            isPropertyReleaseSelected = !isPropertyReleaseSelected;
                           });
                         },
                         selected: isPropertyReleaseSelected,
@@ -97,75 +108,92 @@ class _ResultState extends State<Result> {
                 ),
               ),
               const Padding(padding: EdgeInsets.all(8)),
-              Expanded(
-                // height: 700,
-                child: MasonryGridView.builder(
-                  itemCount: 10,
-                  gridDelegate:
-                      const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+              FutureBuilder<Iterable<ImageObjs>>(
+                  future: client.getImages(
+                    widget.query,
+                    isModelReleaseSelected,
+                    isPropertyReleaseSelected,
+                    orientation,
                   ),
-                  itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.all(1.0),
-                    child: InkResponse(
-                      onTap: () {
-                        showModalBottomSheet(
-                          useSafeArea: true,
-                          isScrollControlled: true,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          context: context,
-                          builder: (context) {
-                            return Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Text("Image Name",
-                                        style: GoogleFonts.poppins(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold)),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      print(snapshot.error);
+                    }
+                    if (snapshot.hasData) {
+                      final data = snapshot.data!;
+
+                      return Expanded(
+                        // height: 700,
+                        child: MasonryGridView.builder(
+                            itemCount: data.length,
+                            gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                            ),
+                            itemBuilder: (context, index) {
+                              final currentItem = data.elementAt(index);
+                              return Padding(
+                                padding: const EdgeInsets.all(1.0),
+                                child: InkResponse(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      useSafeArea: true,
+                                      isScrollControlled: true,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                      context: context,
+                                      builder: (context) {
+                                        return Padding(
+                                          padding: const EdgeInsets.all(15),
+                                          child: Column(
+                                            children: [
+                                              Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                  currentItem.filename,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 20),
+                                              ClipRRect(
+                                                borderRadius: const BorderRadius.all(
+                                                  Radius.circular(20),
+                                                ),
+                                                child: Image.network(currentItem.thumbnailUrl),
+                                              ),
+                                              const SizedBox(height: 20),
+                                              Text(
+                                                currentItem.caption,
+                                                style: GoogleFonts.poppins(fontSize: 16),
+                                              ),
+                                              const Spacer(),
+                                              Align(
+                                                alignment: Alignment.bottomRight,
+                                                child: Container(
+                                                  decoration:
+                                                      BoxDecoration(border: Border.all(), shape: BoxShape.circle),
+                                                  child: IconButton(onPressed: () {}, icon: const Icon(Icons.download)),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(currentItem.thumbnailUrl),
                                   ),
-                                  const SizedBox(height: 20),
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(20)),
-                                    child: Image.asset(
-                                        'assets/images/image${index + 1}.jpg'),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  Text(
-                                    "Porsche 911 historic racing cars in the pit garage before 2022 Masters Historic Racing at Circuit of Catalonia, Barcelona, Spain",
-                                    style: GoogleFonts.poppins(fontSize: 16),
-                                  ),
-                                  const Spacer(),
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          border: Border.all(),
-                                          shape: BoxShape.circle),
-                                      child: IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(Icons.download)),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child:
-                            Image.asset('assets/images/image${index + 1}.jpg'),
-                      ),
-                    ),
-                  ),
-                ),
-              )
+                                ),
+                              );
+                            }),
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  })
             ],
           ),
         ),
@@ -188,26 +216,31 @@ class _ResultState extends State<Result> {
                         ),
                         context: context,
                         builder: (context) {
+                          var refreshWithOrientation = (orientation) {
+                            setState(() {
+                              orientation = orientation;
+                            });
+                          };
+
                           return SizedBox(
                             height: 310,
                             child: Column(
                               children: [
                                 ListTile(
-                                  visualDensity:
-                                      const VisualDensity(vertical: -4),
+                                  visualDensity: const VisualDensity(vertical: -4),
                                   title: Align(
                                     alignment: Alignment.center,
                                     child: Text(
                                       "Orientation",
-                                      style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.bold),
+                                      style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
                                 ListTile(
-                                  onTap: () {},
-                                  visualDensity:
-                                      const VisualDensity(vertical: -4),
+                                  onTap: () {
+                                    refreshWithOrientation("landscape");
+                                  },
+                                  visualDensity: const VisualDensity(vertical: -4),
                                   title: Text(
                                     "Landscape",
                                     style: GoogleFonts.poppins(),
@@ -215,19 +248,21 @@ class _ResultState extends State<Result> {
                                 ),
                                 const Divider(thickness: 1),
                                 ListTile(
-                                  onTap: () {},
-                                  visualDensity:
-                                      const VisualDensity(vertical: -4),
+                                  onTap: () {
+                                    refreshWithOrientation("portrait");
+                                  },
+                                  visualDensity: const VisualDensity(vertical: -4),
                                   title: Text(
-                                    "Portratit",
+                                    "Portrait",
                                     style: GoogleFonts.poppins(),
                                   ),
                                 ),
                                 const Divider(thickness: 1),
                                 ListTile(
-                                  onTap: () {},
-                                  visualDensity:
-                                      const VisualDensity(vertical: -4),
+                                  onTap: () {
+                                    refreshWithOrientation("panoramic");
+                                  },
+                                  visualDensity: const VisualDensity(vertical: -4),
                                   title: Text(
                                     "Panoramic",
                                     style: GoogleFonts.poppins(),
@@ -235,9 +270,10 @@ class _ResultState extends State<Result> {
                                 ),
                                 const Divider(thickness: 1),
                                 ListTile(
-                                  onTap: () {},
-                                  visualDensity:
-                                      const VisualDensity(vertical: -4),
+                                  onTap: () {
+                                    refreshWithOrientation("square");
+                                  },
+                                  visualDensity: const VisualDensity(vertical: -4),
                                   title: Text(
                                     "Square",
                                     style: GoogleFonts.poppins(),
@@ -245,9 +281,10 @@ class _ResultState extends State<Result> {
                                 ),
                                 const Divider(thickness: 1),
                                 ListTile(
-                                  onTap: () {},
-                                  visualDensity:
-                                      const VisualDensity(vertical: -4),
+                                  onTap: () {
+                                    refreshWithOrientation("all");
+                                  },
+                                  visualDensity: const VisualDensity(vertical: -4),
                                   title: Text(
                                     "All",
                                     style: GoogleFonts.poppins(),
@@ -260,8 +297,7 @@ class _ResultState extends State<Result> {
                   },
                   child: Text(
                     "Orientation",
-                    style: GoogleFonts.poppins(
-                        fontSize: 15, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.bold),
                   ),
                 ),
                 const VerticalDivider(
@@ -283,21 +319,18 @@ class _ResultState extends State<Result> {
                               children: [
                                 ListTile(
                                   onTap: () {},
-                                  visualDensity:
-                                      const VisualDensity(vertical: -4),
+                                  visualDensity: const VisualDensity(vertical: -4),
                                   title: Align(
                                     alignment: Alignment.center,
                                     child: Text(
-                                      "Licence",
-                                      style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.bold),
+                                      "License",
+                                      style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
                                 ListTile(
                                   onTap: () {},
-                                  visualDensity:
-                                      const VisualDensity(vertical: -4),
+                                  visualDensity: const VisualDensity(vertical: -4),
                                   title: Text(
                                     "RE",
                                     style: GoogleFonts.poppins(),
@@ -306,8 +339,7 @@ class _ResultState extends State<Result> {
                                 const Divider(thickness: 1),
                                 ListTile(
                                   onTap: () {},
-                                  visualDensity:
-                                      const VisualDensity(vertical: -4),
+                                  visualDensity: const VisualDensity(vertical: -4),
                                   title: Text(
                                     "RM",
                                     style: GoogleFonts.poppins(),
@@ -316,8 +348,7 @@ class _ResultState extends State<Result> {
                                 const Divider(thickness: 1),
                                 ListTile(
                                   onTap: () {},
-                                  visualDensity:
-                                      const VisualDensity(vertical: -4),
+                                  visualDensity: const VisualDensity(vertical: -4),
                                   title: Text(
                                     "Either",
                                     style: GoogleFonts.poppins(),
@@ -329,9 +360,11 @@ class _ResultState extends State<Result> {
                         });
                   },
                   child: Text(
-                    "Licence   ",
+                    "License   ",
                     style: GoogleFonts.poppins(
-                        fontSize: 15, fontWeight: FontWeight.bold),
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 )
               ],
