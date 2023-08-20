@@ -13,7 +13,8 @@ class Result extends StatefulWidget {
 
 class _ResultState extends State<Result> {
   @override
-  bool isSelected = false;
+  bool isModelReleaseSelected = false;
+  bool isPropertyReleaseSelected = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,80 +42,43 @@ class _ResultState extends State<Result> {
       ),
       body: SafeArea(
         child: Container(
-          margin: const EdgeInsets.only(left: 15, right: 15, top: 1),
+          margin: const EdgeInsets.only(left: 10, right: 10, top: 1),
           child: Column(
             children: [
               SizedBox(
                 height: 35,
                 child: ListView(
-                  shrinkWrap: true,
+                  // shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   children: [
                     InputChip(
-                      avatar: const CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            "https://i.pinimg.com/originals/19/bf/64/19bf642f3b4b21127d53d5b41c28add5.jpg"),
-                      ),
-                      label: const Text(
-                        "Landscape",
+                      avatar: const Icon(Icons.star),
+                      label: Text(
+                        "Model Release",
+                        style: GoogleFonts.poppins(),
                       ),
                       onSelected: (bool newBool) {
                         setState(() {
-                          isSelected = !isSelected;
+                          isModelReleaseSelected = !isModelReleaseSelected;
                         });
                       },
-                      selected: isSelected,
+                      selected: isModelReleaseSelected,
                       selectedColor: Colors.grey,
                     ),
                     const Padding(padding: EdgeInsets.all(8)),
                     InputChip(
-                      avatar: const CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            "https://i.pinimg.com/originals/19/bf/64/19bf642f3b4b21127d53d5b41c28add5.jpg"),
-                      ),
-                      label: const Text(
-                        "Portrait",
+                      avatar: const Icon(Icons.star),
+                      label: Text(
+                        "Property Release",
+                        style: GoogleFonts.poppins(),
                       ),
                       onSelected: (bool newBool) {
                         setState(() {
-                          isSelected = !isSelected;
+                          isPropertyReleaseSelected =
+                              !isPropertyReleaseSelected;
                         });
                       },
-                      selected: isSelected,
-                      selectedColor: Colors.grey,
-                    ),
-                    const Padding(padding: EdgeInsets.all(8)),
-                    InputChip(
-                      avatar: const CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            "https://i.pinimg.com/originals/19/bf/64/19bf642f3b4b21127d53d5b41c28add5.jpg"),
-                      ),
-                      label: const Text(
-                        "4K",
-                      ),
-                      onSelected: (bool newBool) {
-                        setState(() {
-                          isSelected = !isSelected;
-                        });
-                      },
-                      selected: isSelected,
-                      selectedColor: Colors.grey,
-                    ),
-                    const Padding(padding: EdgeInsets.all(8)),
-                    InputChip(
-                      avatar: const CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            "https://i.pinimg.com/originals/19/bf/64/19bf642f3b4b21127d53d5b41c28add5.jpg"),
-                      ),
-                      label: const Text(
-                        "Itachi",
-                      ),
-                      onSelected: (bool newBool) {
-                        setState(() {
-                          isSelected = !isSelected;
-                        });
-                      },
-                      selected: isSelected,
+                      selected: isPropertyReleaseSelected,
                       selectedColor: Colors.grey,
                     ),
                     const Padding(padding: EdgeInsets.all(8)),
@@ -152,18 +116,157 @@ class _ResultState extends State<Result> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        context: context,
+                        builder: (context) {
+                          return SizedBox(
+                            height: 310,
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
+                                  title: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Orientation",
+                                      style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                ListTile(
+                                  onTap: () {},
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
+                                  title: Text(
+                                    "Landscape",
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                ),
+                                const Divider(thickness: 1),
+                                ListTile(
+                                  onTap: () {},
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
+                                  title: Text(
+                                    "Portratit",
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                ),
+                                const Divider(thickness: 1),
+                                ListTile(
+                                  onTap: () {},
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
+                                  title: Text(
+                                    "Panoramic",
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                ),
+                                const Divider(thickness: 1),
+                                ListTile(
+                                  onTap: () {},
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
+                                  title: Text(
+                                    "Square",
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                ),
+                                const Divider(thickness: 1),
+                                ListTile(
+                                  onTap: () {},
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
+                                  title: Text(
+                                    "All",
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        });
+                  },
                   child: Text(
                     "Orientation",
                     style: GoogleFonts.poppins(
                         fontSize: 15, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const Text("|"),
+                const VerticalDivider(
+                  thickness: 2,
+                ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(20),
+                          ),
+                        ),
+                        context: context,
+                        builder: (context) {
+                          return SizedBox(
+                            height: 210,
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  onTap: () {},
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
+                                  title: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "Licence",
+                                      style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                ListTile(
+                                  onTap: () {},
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
+                                  title: Text(
+                                    "RE",
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                ),
+                                const Divider(thickness: 1),
+                                ListTile(
+                                  onTap: () {},
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
+                                  title: Text(
+                                    "RM",
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                ),
+                                const Divider(thickness: 1),
+                                ListTile(
+                                  onTap: () {},
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
+                                  title: Text(
+                                    "Either",
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        });
+                  },
                   child: Text(
-                    "Landscape",
+                    "Licence   ",
                     style: GoogleFonts.poppins(
                         fontSize: 15, fontWeight: FontWeight.bold),
                   ),

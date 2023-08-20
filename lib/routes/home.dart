@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lumina/routes/results.dart';
+import 'package:file_picker/file_picker.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -11,10 +12,10 @@ class HomePage extends StatelessWidget {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          leading: const Icon(
-            Icons.menu,
-            color: Colors.black,
-          ),
+          // leading: const Icon(
+          //   Icons.menu,
+          //   color: Colors.black,
+          // ),
           actions: const [
             Padding(
               padding: EdgeInsets.all(10.0),
@@ -33,7 +34,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
         body: Container(
-          margin: const EdgeInsets.all(15),
+          margin: const EdgeInsets.all(10),
           child: Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -52,7 +53,12 @@ class HomePage extends StatelessWidget {
                     icon: const Icon(
                       Icons.image_search,
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      final result = await FilePicker.platform.pickFiles(
+                          type: FileType.custom,
+                          allowedExtensions: ['jpg', 'png']);
+                      if (result == null) return;
+                    },
                   ),
                   suffixIcon: IconButton(
                     color: Colors.black,
