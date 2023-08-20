@@ -15,15 +15,6 @@ class HomePage extends StatelessWidget {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          actions: const [
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Icon(
-                Icons.dark_mode_sharp,
-                color: Colors.black,
-              ),
-            )
-          ],
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -35,7 +26,9 @@ class HomePage extends StatelessWidget {
         body: Column(
           children: [
             const Spacer(),
-            Container(alignment: Alignment.center, child: Lottie.asset('assets/images/animationBackground.json')),
+            Container(
+                alignment: Alignment.center,
+                child: Lottie.asset('assets/images/animationBackground.json')),
             const Spacer(),
             Container(
               margin: const EdgeInsets.all(10),
@@ -67,7 +60,7 @@ class SearchInput extends StatefulWidget {
 }
 
 class _SearchInputState extends State<SearchInput> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   String? initialStringValue;
 
   @override
@@ -84,7 +77,8 @@ class _SearchInputState extends State<SearchInput> {
             Icons.image_search,
           ),
           onPressed: () async {
-            final result = await FilePicker.platform.pickFiles(type: FileType.image);
+            final result =
+                await FilePicker.platform.pickFiles(type: FileType.image);
             if (result != null) {
               PlatformFile file = result.files.first;
               final label = await client.predict(file.path!);
@@ -98,12 +92,14 @@ class _SearchInputState extends State<SearchInput> {
           color: Colors.black,
           icon: const Icon(Icons.search),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Result(query: _controller.text),
-              ),
-            );
+            _controller.text == ""
+                ? null
+                : Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Result(query: _controller.text),
+                    ),
+                  );
           },
         ),
       ),

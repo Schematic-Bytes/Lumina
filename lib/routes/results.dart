@@ -24,25 +24,13 @@ class _ResultState extends State<Result> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              widget.query,
-              style: GoogleFonts.poppins(
-                color: Colors.black,
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              "10 Items",
-              style: GoogleFonts.poppins(
-                color: Colors.black,
-                fontSize: 13,
-              ),
-            )
-          ],
+        title: Text(
+          widget.query,
+          style: GoogleFonts.poppins(
+            color: Colors.black,
+            fontSize: 17,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -96,7 +84,8 @@ class _ResultState extends State<Result> {
                         ),
                         onSelected: (bool newBool) {
                           setState(() {
-                            isPropertyReleaseSelected = !isPropertyReleaseSelected;
+                            isPropertyReleaseSelected =
+                                !isPropertyReleaseSelected;
                           });
                         },
                         selected: isPropertyReleaseSelected,
@@ -123,10 +112,10 @@ class _ResultState extends State<Result> {
                       final data = snapshot.data!;
 
                       return Expanded(
-                        // height: 700,
                         child: MasonryGridView.builder(
                             itemCount: data.length,
-                            gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate:
+                                const SliverSimpleGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                             ),
                             itemBuilder: (context, index) {
@@ -138,7 +127,9 @@ class _ResultState extends State<Result> {
                                     showModalBottomSheet(
                                       useSafeArea: true,
                                       isScrollControlled: true,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
                                       context: context,
                                       builder: (context) {
                                         return Padding(
@@ -157,23 +148,31 @@ class _ResultState extends State<Result> {
                                               ),
                                               const SizedBox(height: 20),
                                               ClipRRect(
-                                                borderRadius: const BorderRadius.all(
+                                                borderRadius:
+                                                    const BorderRadius.all(
                                                   Radius.circular(20),
                                                 ),
-                                                child: Image.network(currentItem.thumbnailUrl),
+                                                child: Image.network(
+                                                    currentItem.thumbnailUrl),
                                               ),
                                               const SizedBox(height: 20),
                                               Text(
                                                 currentItem.caption,
-                                                style: GoogleFonts.poppins(fontSize: 16),
+                                                style: GoogleFonts.poppins(
+                                                    fontSize: 16),
                                               ),
                                               const Spacer(),
                                               Align(
-                                                alignment: Alignment.bottomRight,
+                                                alignment:
+                                                    Alignment.bottomRight,
                                                 child: Container(
-                                                  decoration:
-                                                      BoxDecoration(border: Border.all(), shape: BoxShape.circle),
-                                                  child: IconButton(onPressed: () {}, icon: const Icon(Icons.download)),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(),
+                                                      shape: BoxShape.circle),
+                                                  child: IconButton(
+                                                      onPressed: () {},
+                                                      icon: const Icon(
+                                                          Icons.download)),
                                                 ),
                                               )
                                             ],
@@ -184,7 +183,8 @@ class _ResultState extends State<Result> {
                                   },
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
-                                    child: Image.network(currentItem.thumbnailUrl),
+                                    child:
+                                        Image.network(currentItem.thumbnailUrl),
                                   ),
                                 ),
                               );
@@ -216,31 +216,31 @@ class _ResultState extends State<Result> {
                         ),
                         context: context,
                         builder: (context) {
-                          var refreshWithOrientation = (orientation) {
-                            setState(() {
-                              orientation = orientation;
-                            });
-                          };
-
                           return SizedBox(
                             height: 310,
                             child: Column(
                               children: [
                                 ListTile(
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   title: Align(
                                     alignment: Alignment.center,
                                     child: Text(
                                       "Orientation",
-                                      style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                                      style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
                                 ListTile(
                                   onTap: () {
-                                    refreshWithOrientation("landscape");
+                                    setState(() {
+                                      orientation = "landscape";
+                                    });
+                                    Navigator.pop(context);
                                   },
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   title: Text(
                                     "Landscape",
                                     style: GoogleFonts.poppins(),
@@ -249,9 +249,14 @@ class _ResultState extends State<Result> {
                                 const Divider(thickness: 1),
                                 ListTile(
                                   onTap: () {
-                                    refreshWithOrientation("portrait");
+                                    setState(() {
+                                      orientation = "portrait";
+                                    });
+
+                                    Navigator.pop(context);
                                   },
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   title: Text(
                                     "Portrait",
                                     style: GoogleFonts.poppins(),
@@ -260,9 +265,13 @@ class _ResultState extends State<Result> {
                                 const Divider(thickness: 1),
                                 ListTile(
                                   onTap: () {
-                                    refreshWithOrientation("panoramic");
+                                    setState(() {
+                                      orientation = "panoramic";
+                                    });
+                                    Navigator.pop(context);
                                   },
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   title: Text(
                                     "Panoramic",
                                     style: GoogleFonts.poppins(),
@@ -271,9 +280,13 @@ class _ResultState extends State<Result> {
                                 const Divider(thickness: 1),
                                 ListTile(
                                   onTap: () {
-                                    refreshWithOrientation("square");
+                                    setState(() {
+                                      orientation = "square";
+                                    });
+                                    Navigator.pop(context);
                                   },
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   title: Text(
                                     "Square",
                                     style: GoogleFonts.poppins(),
@@ -282,9 +295,13 @@ class _ResultState extends State<Result> {
                                 const Divider(thickness: 1),
                                 ListTile(
                                   onTap: () {
-                                    refreshWithOrientation("all");
+                                    setState(() {
+                                      orientation = "all";
+                                    });
+                                    Navigator.pop(context);
                                   },
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   title: Text(
                                     "All",
                                     style: GoogleFonts.poppins(),
@@ -297,7 +314,8 @@ class _ResultState extends State<Result> {
                   },
                   child: Text(
                     "Orientation",
-                    style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.poppins(
+                        fontSize: 15, fontWeight: FontWeight.bold),
                   ),
                 ),
                 const VerticalDivider(
@@ -319,18 +337,23 @@ class _ResultState extends State<Result> {
                               children: [
                                 ListTile(
                                   onTap: () {},
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   title: Align(
                                     alignment: Alignment.center,
                                     child: Text(
                                       "License",
-                                      style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
+                                      style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
                                 ListTile(
-                                  onTap: () {},
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   title: Text(
                                     "RE",
                                     style: GoogleFonts.poppins(),
@@ -338,8 +361,11 @@ class _ResultState extends State<Result> {
                                 ),
                                 const Divider(thickness: 1),
                                 ListTile(
-                                  onTap: () {},
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   title: Text(
                                     "RM",
                                     style: GoogleFonts.poppins(),
@@ -347,8 +373,11 @@ class _ResultState extends State<Result> {
                                 ),
                                 const Divider(thickness: 1),
                                 ListTile(
-                                  onTap: () {},
-                                  visualDensity: const VisualDensity(vertical: -4),
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  visualDensity:
+                                      const VisualDensity(vertical: -4),
                                   title: Text(
                                     "Either",
                                     style: GoogleFonts.poppins(),
