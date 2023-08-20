@@ -48,38 +48,49 @@ class _ResultState extends State<Result> {
               SizedBox(
                 height: 35,
                 child: ListView(
-                  // shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
                   children: [
-                    InputChip(
-                      avatar: const Icon(Icons.star),
-                      label: Text(
-                        "Model Release",
-                        style: GoogleFonts.poppins(),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      onSelected: (bool newBool) {
-                        setState(() {
-                          isModelReleaseSelected = !isModelReleaseSelected;
-                        });
-                      },
-                      selected: isModelReleaseSelected,
-                      selectedColor: Colors.grey,
+                      child: InputChip(
+                        backgroundColor: Colors.transparent,
+                        label: Text(
+                          "Model Release",
+                          style: GoogleFonts.poppins(),
+                        ),
+                        onSelected: (bool newBool) {
+                          setState(() {
+                            isModelReleaseSelected = !isModelReleaseSelected;
+                          });
+                        },
+                        selected: isModelReleaseSelected,
+                        selectedColor: Colors.grey,
+                      ),
                     ),
                     const Padding(padding: EdgeInsets.all(8)),
-                    InputChip(
-                      avatar: const Icon(Icons.star),
-                      label: Text(
-                        "Property Release",
-                        style: GoogleFonts.poppins(),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      onSelected: (bool newBool) {
-                        setState(() {
-                          isPropertyReleaseSelected =
-                              !isPropertyReleaseSelected;
-                        });
-                      },
-                      selected: isPropertyReleaseSelected,
-                      selectedColor: Colors.grey,
+                      child: InputChip(
+                        backgroundColor: Colors.transparent,
+                        label: Text(
+                          "Property Release",
+                          style: GoogleFonts.poppins(),
+                        ),
+                        onSelected: (bool newBool) {
+                          setState(() {
+                            isPropertyReleaseSelected =
+                                !isPropertyReleaseSelected;
+                          });
+                        },
+                        selected: isPropertyReleaseSelected,
+                        selectedColor: Colors.grey,
+                      ),
                     ),
                     const Padding(padding: EdgeInsets.all(8)),
                   ],
@@ -96,9 +107,61 @@ class _ResultState extends State<Result> {
                   ),
                   itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.all(1.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.asset('assets/images/image${index + 1}.jpg'),
+                    child: InkResponse(
+                      onTap: () {
+                        showModalBottomSheet(
+                          useSafeArea: true,
+                          isScrollControlled: true,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          context: context,
+                          builder: (context) {
+                            return Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Column(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text("Image Name",
+                                        style: GoogleFonts.poppins(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(20)),
+                                    child: Image.asset(
+                                        'assets/images/image${index + 1}.jpg'),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    "Porsche 911 historic racing cars in the pit garage before 2022 Masters Historic Racing at Circuit of Catalonia, Barcelona, Spain",
+                                    style: GoogleFonts.poppins(fontSize: 16),
+                                  ),
+                                  const Spacer(),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(),
+                                          shape: BoxShape.circle),
+                                      child: IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(Icons.download)),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child:
+                            Image.asset('assets/images/image${index + 1}.jpg'),
+                      ),
                     ),
                   ),
                 ),
