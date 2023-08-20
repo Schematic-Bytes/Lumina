@@ -1,10 +1,9 @@
-import 'dart:io';
-
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
+import 'package:lumina/requests/client.dart';
 import 'package:lumina/routes/results.dart';
-import 'package:file_picker/file_picker.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -35,9 +34,7 @@ class HomePage extends StatelessWidget {
         body: Column(
           children: [
             const Spacer(),
-            Container(
-                alignment: Alignment.center,
-                child: Lottie.asset('assets/images/animationBackground.json')),
+            Container(alignment: Alignment.center, child: Lottie.asset('assets/images/animationBackground.json')),
             const Spacer(),
             Container(
               margin: const EdgeInsets.all(10),
@@ -50,41 +47,63 @@ class HomePage extends StatelessWidget {
                     border: Border.all(),
                     borderRadius: const BorderRadius.all(Radius.circular(20)),
                   ),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      hintText: "Search Photo",
-                      border: InputBorder.none,
-                      prefixIcon: IconButton(
-                        color: Colors.black,
-                        icon: const Icon(
-                          Icons.image_search,
-                        ),
-                        onPressed: () async {
-                          final result = await FilePicker.platform
-                              .pickFiles(type: FileType.image);
-                          if (result != null) {
-                            PlatformFile file = result.files.first;
-                          }
-                        },
-                      ),
-                      suffixIcon: IconButton(
-                        color: Colors.black,
-                        icon: const Icon(Icons.search),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const Result(),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                  child: SearchInput(key: key),
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class SearchInput extends StatefulWidget {
+  const SearchInput({super.key});
+
+  @override
+  State<SearchInput> createState() => _SearchInputState();
+}
+
+class _SearchInputState extends State<SearchInput> {
+  TextEditingController _controller = TextEditingController();
+  String? initialStringValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: _controller,
+      decoration: InputDecoration(
+        hintText: "Search Photo",
+        border: InputBorder.none,
+        prefixIcon: IconButton(
+          color: Colors.black,
+          icon: const Icon(
+            Icons.image_search,
+          ),
+          onPressed: () async {
+            final result = await FilePicker.platform.pickFiles(type: FileType.image);
+            if (result != null) {
+              PlatformFile file = result.files.first;
+              final client = Client();
+              final label = await client.predict(file.path!);
+              setState(() {
+                _controller.text = label;
+              });
+            }
+          },
+        ),
+        suffixIcon: IconButton(
+          color: Colors.black,
+          icon: const Icon(Icons.search),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Result(),
+              ),
+            );
+          },
         ),
       ),
     );
