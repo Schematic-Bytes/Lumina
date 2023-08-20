@@ -12,8 +12,10 @@ class Client {
     bool mr,
     bool pr,
     String orientation,
+    String license,
   ) async {
-    var response = await _innerClient.get(Uri.parse("${AppConfig.URI}/api/v1/search/$query/?orientation=$orientation"));
+    var response = await _innerClient
+        .get(Uri.parse("${AppConfig.URI}/api/v1/search/$query/?orientation=$orientation?license=$license"));
     var data = json.decode(response.body);
     print(data);
     var results = List.from(data['results']).map((e) => ImageObjs.fromMap(e));
